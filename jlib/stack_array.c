@@ -13,6 +13,8 @@ struct Stack
     void *items;
 };
 
+static struct Stack *stack_expand(struct Stack *, size_t);
+
 struct Stack *stack_new(size_t elt_size)
 {
     struct Stack *stack;
@@ -49,30 +51,17 @@ struct Stack *stack_push(struct Stack *stack, void *item)
 
     if (stack->top == stack->maxsize)
     {
-        size_t maxsize;
-        void *items;
-
         if (stack->maxsize > SIZE_MAX >> 1)
         {
             return NULL;
         }
 
-        maxsize = (stack->maxsize << 1) + (stack->maxsize == 0);
+        stack = stack_expand(stack, (stack->maxsize << 1) + (stack->maxsize == 0));
 
-        if (maxsize > SIZE_MAX / stack->elt_size)
+        if (stack == NULL)
         {
             return NULL;
         }
-
-        items = realloc(stack->items, maxsize * stack->elt_size);
-
-        if (items == NULL)
-        {
-            return NULL;
-        }
-
-        stack->maxsize = maxsize;
-        stack->items = items;
     }
 
     memcpy(stack->items + stack->top * stack->elt_size, item, stack->elt_size);
@@ -91,12 +80,44 @@ struct Stack *stack_pop(struct Stack *stack, void *item)
         return NULL;
     }
 
+    if (stack->top << 1 == stack->maxsize >> 1)
+    {
+        stack = stack_expand(stack, stack->maxsize >> 1);
+
+        if (stack == NULL)
+        {
+            return NULL;
+        }
+    }
+
     stack->top--;
 
     if (item != NULL)
     {
         memcpy(item, stack->items + stack->top * stack->elt_size, stack->elt_size);
     }
+
+    return stack;
+}
+
+static struct Stack *stack_expand(struct Stack *stack, size_t maxsize)
+{
+    void *items;
+
+    if (maxsize > SIZE_MAX / stack->elt_size)
+    {
+        return NULL;
+    }
+
+    items = realloc(stack->items, maxsize * stack->elt_size);
+
+    if (items == NULL)
+    {
+        return NULL;
+    }
+
+    stack->maxsize = maxsize;
+    stack->items = items;
 
     return stack;
 }
