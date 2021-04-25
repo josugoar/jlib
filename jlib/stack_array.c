@@ -13,7 +13,7 @@ struct Stack
     void *items;
 };
 
-static struct Stack *stack_resize(struct Stack *, size_t);
+static struct Stack *stack_resize(struct Stack *stack, size_t maxsize);
 
 struct Stack *stack_new(size_t elt_size)
 {
