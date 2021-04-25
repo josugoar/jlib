@@ -103,6 +103,9 @@ struct Stack *stack_pop(struct Stack *stack, void *item)
 static struct Stack *stack_resize(struct Stack *stack, size_t maxsize)
 {
     void *items;
+    
+    assert(stack != NULL);
+    assert(maxsize != 0);
 
     if (maxsize > SIZE_MAX / stack->elt_size)
     {
