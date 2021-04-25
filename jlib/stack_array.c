@@ -13,7 +13,7 @@ struct Stack
     void *items;
 };
 
-static struct Stack *stack_expand(struct Stack *, size_t);
+static struct Stack *stack_resize(struct Stack *, size_t);
 
 struct Stack *stack_new(size_t elt_size)
 {
@@ -56,7 +56,7 @@ struct Stack *stack_push(struct Stack *stack, void *item)
             return NULL;
         }
 
-        stack = stack_expand(stack, (stack->maxsize << 1) + (stack->maxsize == 0));
+        stack = stack_resize(stack, (stack->maxsize << 1) + (stack->maxsize == 0));
 
         if (stack == NULL)
         {
@@ -82,7 +82,7 @@ struct Stack *stack_pop(struct Stack *stack, void *item)
 
     if (stack->top << 1 == stack->maxsize >> 1)
     {
-        stack = stack_expand(stack, stack->maxsize >> 1);
+        stack = stack_resize(stack, stack->maxsize >> 1);
 
         if (stack == NULL)
         {
@@ -100,7 +100,7 @@ struct Stack *stack_pop(struct Stack *stack, void *item)
     return stack;
 }
 
-static struct Stack *stack_expand(struct Stack *stack, size_t maxsize)
+static struct Stack *stack_resize(struct Stack *stack, size_t maxsize)
 {
     void *items;
 
