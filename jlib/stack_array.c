@@ -21,7 +21,7 @@ struct Stack *stack_new(size_t elt_size)
 
     assert(elt_size != 0);
 
-    stack = (struct Stack *)malloc(sizeof(struct Stack));
+    stack = (struct Stack *)malloc(sizeof(*stack));
 
     if (stack == NULL)
     {
@@ -51,14 +51,12 @@ struct Stack *stack_push(struct Stack *stack, void *item)
 
     if (stack->top == stack->maxsize)
     {
-        if (stack->maxsize > SIZE_MAX >> 1)
+        if (stack->maxsize > SIZE_MAX / 2)
         {
             return NULL;
         }
 
-        stack = stack_resize(stack, (stack->maxsize << 1) + (stack->maxsize == 0));
-
-        if (stack == NULL)
+        if (stack_resize(stack, (stack->maxsize == 0) + stack->maxsize * 2) == NULL)
         {
             return NULL;
         }
@@ -80,11 +78,9 @@ struct Stack *stack_pop(struct Stack *stack, void *item)
         return NULL;
     }
 
-    if (stack->top << 1 == stack->maxsize >> 1)
+    if (stack->top == stack->maxsize / 4)
     {
-        stack = stack_resize(stack, stack->maxsize >> 1);
-
-        if (stack == NULL)
+        if (stack_resize(stack, stack->maxsize / 2) == NULL)
         {
             return NULL;
         }
