@@ -18,7 +18,7 @@ struct Heap *heap_new(size_t elt_size)
 {
     struct Heap *heap;
 
-    heap = (struct Heap *)malloc(sizeof(struct Heap));
+    heap = (struct Heap *)malloc(sizeof(*heap));
 
     if (heap == NULL)
     {
@@ -47,14 +47,12 @@ struct Heap *heap_store(struct Heap *heap, size_t key, void *value)
 
     if (key >= heap->maxsize)
     {
-        if (key == SIZE_MAX)
+        if (key > SIZE_MAX - 1)
         {
             return NULL;
         }
 
-        heap = heap_resize(heap, key + 1);
-
-        if (heap == NULL)
+        if (heap_resize(heap, key + 1) == NULL)
         {
             return NULL;
         }
