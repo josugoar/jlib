@@ -22,7 +22,7 @@ struct Stack *stack_new(size_t elt_size)
 
     assert(elt_size != 0);
 
-    stack = (struct Stack *)malloc(sizeof(struct Stack));
+    stack = (struct Stack *)malloc(sizeof(*stack));
 
     if (stack == NULL)
     {
@@ -64,7 +64,7 @@ struct Stack *stack_push(struct Stack *stack, void *item)
     assert(stack != NULL);
     assert(item != NULL);
 
-    head = (struct Frame *)malloc(sizeof(struct Frame));
+    head = (struct Frame *)malloc(sizeof(*head));
 
     if (head == NULL)
     {
