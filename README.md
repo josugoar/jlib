@@ -1,3 +1,3 @@
 # jlib
 
-> GLib inspired C library aiming to expand on its personal use case
+> GLib inspired generic data structures C library for personal use
